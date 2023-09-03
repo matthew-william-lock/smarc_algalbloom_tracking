@@ -1,0 +1,17 @@
+wp_distance: 50.0
+threshold: 0.1
+n_measurements: 200
+speed: 1.0
+travel_rpm: 1180
+waypoint_tolerance: 40
+range: 20
+delta_ref: 7.45
+
+# GP kernel
+kernel: 'MAT'
+kernel_params: [44.29588721, 0.54654887, 0.26656638]
+std: 0.001
+
+# Controller parameters
+alpha_seek: 50
+alpha_follow: 1

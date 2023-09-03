@@ -1,0 +1,31 @@
+<launch>
+	<!-- Data parameters -->
+	<arg name="output_data_path" default="/home/jfgf/catkin_ws/src/smarc_algal_bloom_tracking/output"/>
+	<arg name="robot_name" default="sam"/>
+	
+
+	<!-- Tracker node -->
+	<group ns="$(arg robot_name)">
+		<node name="algalbloom_tracker" pkg="smarc_algal_bloom_tracking" type="sam_gp4aes_controller.py" output="screen">
+			<rosparam file="$(find smarc_algal_bloom_tracking)/config/controller_params.yaml"></rosparam>
+			<param name="output_data_path" value="$(arg output_data_path)"/>
+			
+			<!-- Topics Subscribed -->
+			<remap from="~measurement" to="algae_tracking/measurement"/>
+			<remap from="~gps" to="core/gps" />
+			<remap from="~go_to_waypoint_result" to="ctrl/goto_waypoint/result"/>
+			<remap from="~gps_offset" to="algae_tracking/lat_lon_offset"/>
+
+			<!-- Topics Published -->
+			<remap from="~gradient" to="algae_tracking/gradient"/>
+			<remap from="~live_waypoint" to="smarc_bt/live_wp/wp"/>
+			<remap from="~virtual_position" to="algae_tracking/vp"/>
+			<remap from="~enable_live_waypoint" to="smarc_bt/live_wp/enable"/>
+
+			<!-- Service Clients -->
+			<remap from="~lat_lon_utm_srv" to="dr/lat_lon_to_utm"/>
+
+		</node>
+	</group>
+
+</launch>

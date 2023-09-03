@@ -1,0 +1,59 @@
+<launch>
+	<!-- Data parameters -->
+	<arg name="data_file_base_path" default="/home/jfgf/catkin_ws/src/smarc_algal_bloom_tracking/data"/>
+	<arg name="output_data_path" default="/home/jfgf/catkin_ws/src/smarc_algal_bloom_tracking/output"/>
+	<arg name="offset_map_and_gps" value="True"/>
+	<arg name="data_rotate_angle" value="0.0" />
+	<arg name="sampling_time" value="6.0" />
+	<arg name="sampling_frequency" value="6.0"/>
+	<arg name="delta_ref" value="7.45" />
+	<arg name="robot_name" default="sam"/>
+	<arg name="gps_topic" default="/$(arg robot_name)/core/gps" />
+	<arg name="data_downs_scale_factor" value="1.0"/>
+
+	<arg name="mode" value="1" />
+
+    <node name="substance_sampler" pkg="smarc_algal_bloom_tracking" type="substance_sampler.py" output="screen">
+		<param name="data_file_base_path" value="$(arg data_file_base_path)"/>
+		<param name="output_data_path" value="$(arg output_data_path)"/>
+		<param name="offset_map_and_gps" value="$(arg offset_map_and_gps)"/>
+		<param name="data_rotate_angle" value="$(arg data_rotate_angle)"  />
+		<param name="sampling_time" value="$(arg sampling_time)"  />
+		<param name="delta_ref" value="$(arg delta_ref)"  />
+
+		<!-- SIMULATIONS -->
+		<!-- ============================================================================= -->
+		<!-- For mode 1, lat is "61.49" and lon is "20.9" -->
+		<param name="sam_starting_lat" value="61.49"  if="$(eval arg('mode') == 1)"/>       
+		<param name="sam_starting_lon" value="20.93"  if="$(eval arg('mode') == 1)"/>
+		<param name="map_starting_lat" value="61.418712616"  if="$(eval arg('mode') == 1)"/>       
+		<param name="map_starting_lon" value="20.789894104"  if="$(eval arg('mode') == 1)"/>
+		<param name="data_downs_scale_factor" value="1.0" if="$(eval arg('mode') == 1)"/>
+
+		<param name="sam_starting_lat" value="61.4207"  if="$(eval arg('mode') == 2)"/>
+		<param name="sam_starting_lon" value="20.7921"  if="$(eval arg('mode') == 2)"/>
+		<param name="map_starting_lat" value="61.418712616"  if="$(eval arg('mode') == 2)"/>
+		<param name="map_starting_lon" value="20.789894104"  if="$(eval arg('mode') == 2)"/>
+		<param name="data_downs_scale_factor" value="100.0" if="$(eval arg('mode') == 2)"/>
+		<!-- ============================================================================= -->
+
+		<!-- Positional information -->
+		<remap from="~gps_topic" to="$(arg gps_topic)" />
+
+    </node>
+
+	<node name="plot_live_grid_node" pkg="smarc_algal_bloom_tracking" type="plot_live_grid.py" output="screen">
+		<param name="data_file_base_path" value="$(arg data_file_base_path)"/>
+		<param name="output_data_path" value="$(arg output_data_path)"/>
+		<param name="data_downs_scale_factor" value="1.0" if="$(eval arg('mode') == 1)"/>
+		<param name="data_downs_scale_factor" value="100.0" if="$(eval arg('mode') == 2)"/>
+		<param name="offset_map_and_gps" value="$(arg offset_map_and_gps)"/>
+		<param name="data_rotate_angle" value="$(arg data_rotate_angle)"  />
+		<param name="sampling_time" value="$(arg sampling_time)"  />
+		<param name="delta_ref" value="$(arg delta_ref)"  />
+
+		<!-- Positional information -->
+		<remap from="~gps_topic" to="$(arg gps_topic)" />
+    </node>
+
+</launch>
